@@ -26,4 +26,9 @@ public class Session {
 		
 	}
 	
+	//this should run string s as a sql command and return the result 
+	public Object createNativeQuery(String s, Class<?> c) {
+		return null;
+	}
+	
 }
