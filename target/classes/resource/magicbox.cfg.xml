@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<configuration>
+	<session-factory>
+		<property name="magicbox.connection.url">jdbc:postgresql://p0db.ca760eihqtrz.us-west-1.rds.amazonaws.com:5432</property>
+		<property name="magicbox.connection.username">postgres</property>
+		<property name="magicbox.connection.password">bruhmoment</property>
+	</session-factory>
+</configuration>
