@@ -40,15 +40,11 @@ public class Configuration {
 
 	          Document doc = db.parse(new File("src/main/java/resource/" + s));
 
-	          doc.getDocumentElement().normalize();
-
-	          System.out.println("Root Element :" + doc.getDocumentElement().getNodeName());
-	          System.out.println("Child Element :" + doc.getDocumentElement().getFirstChild().getNodeName());
-	          System.out.println("------");
+	          doc.getDocumentElement().normalize();	       
 	          
-	          /*
 	          NodeList list = doc.getElementsByTagName("property");
-
+	          
+	          // TODO read credentials and connect to db
 	          for (int temp = 0; temp < list.getLength(); temp++) {
 
 	              Node node = list.item(temp);
@@ -56,14 +52,12 @@ public class Configuration {
 	              if (node.getNodeType() == Node.ELEMENT_NODE) {
 
 	                  Element element = (Element) node;
-	                  String name = element.getAttribute("name");
-
-	                 
+	                  String name = element.getAttribute("name");	                 
 
 	                  System.out.println("Current Element :" + node.getNodeName());
-	                  System.out.println("Propertty : " + name);
+	                  System.out.println("Property : " + name);
 	              }
-	          }*/
+	          }
 
 	      } catch (ParserConfigurationException | SAXException | IOException e) {
 	          e.printStackTrace();
