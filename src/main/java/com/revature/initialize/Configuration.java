@@ -16,7 +16,9 @@ import java.io.InputStream;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
@@ -24,15 +26,15 @@ public class Configuration {
 	
 	private static ConnectionUtil connUtil = null;
 	
-	//this should return a new sessionfactory object based on a config file name as the input
+	// This should return a new sessionfactory object based on a config file name as the input
 	public SessionFactory configure(String s) {
 	      // Instantiate the Factory
 	      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
 	      try {
 
-	          // optional, but recommended
-	          // process XML securely, avoid attacks like XML External Entities (XXE)
+	          // Optional, but recommended
+	          // Process XML securely, avoid attacks like XML External Entities (XXE)
 	          dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
 	          // parse XML file
@@ -44,7 +46,15 @@ public class Configuration {
 	          
 	          NodeList list = doc.getElementsByTagName("property");
 	          
-	          // TODO read credentials and connect to db
+	          connUtil = new ConnectionUtil();
+	          
+	          // User credentials
+	          String url = null;
+	          String username = null;
+	          String password = null;
+	          String poolSize = null;
+	          
+	          // Read credentials and connect to DB
 	          for (int temp = 0; temp < list.getLength(); temp++) {
 
 	              Node node = list.item(temp);
@@ -56,13 +66,29 @@ public class Configuration {
 
 	                  System.out.println("Current Element :" + node.getNodeName());
 	                  System.out.println("Property : " + name);
+	                  System.out.println(element.getTextContent());
+	                  
+	                  if(name.equals("magicbox.connection.url")) {
+	                	  url = element.getTextContent();
+	                  }
+	                  else if(name.equals("magicbox.connection.username")) {
+	                	  username = element.getTextContent();
+	                  }
+	                  else if(name.equals("magicbox.connection.password")) {
+	                	  password = element.getTextContent();
+	                  }
+	                  else if(name.equals("magicbox.connection.pool_size")) {
+	                	  poolSize = element.getTextContent();
+	                  }
 	             }
 	              
 	          }
+	          
+	          connUtil.properties(url, username, password, poolSize);	          
 
 	      } catch (ParserConfigurationException | SAXException | IOException e) {
 	          e.printStackTrace();
-	      }
+	      } 
 		return null;
 	}
 	

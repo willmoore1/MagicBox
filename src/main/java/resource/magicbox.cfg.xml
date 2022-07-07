@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
 <configuration>
 	<session-factory>
-		<property name="magicbox.connection.url">jdbc:postgresql://p0db.ca760eihqtrz.us-west-1.rds.amazonaws.com:5432</property>
+		<property name="magicbox.connection.url">jdbc:postgresql://database-2.cxoqvipxbnxl.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=bank"</property>
 		<property name="magicbox.connection.username">postgres</property>
-		<property name="magicbox.connection.password">bruhmoment</property>
+		<property name="magicbox.connection.password">masterpassword</property>
+		<property name="magicbox.connection.pool_size">10</property>
+		
+		<mapping class="com.revature.models.Crime"/>
 	</session-factory>
 </configuration>
