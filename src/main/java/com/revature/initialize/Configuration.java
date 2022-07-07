@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 
 public class Configuration {
 	
-	private static Connection conn = null;
+	private static ConnectionUtil connUtil = null;
 	
 	//this should return a new sessionfactory object based on a config file name as the input
 	public SessionFactory configure(String s) {
@@ -56,7 +56,8 @@ public class Configuration {
 
 	                  System.out.println("Current Element :" + node.getNodeName());
 	                  System.out.println("Property : " + name);
-	              }
+	             }
+	              
 	          }
 
 	      } catch (ParserConfigurationException | SAXException | IOException e) {
