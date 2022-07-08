@@ -6,6 +6,6 @@
 		<property name="magicbox.connection.password">masterpassword</property>
 		<property name="magicbox.connection.pool_size">10</property>
 		
-		<mapping class="com.revature.models.Crime"/>
+		<mapping class="com.revature.models.DummyClass"/>
 	</session-factory>
 </configuration>
