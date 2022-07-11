@@ -1,5 +1,6 @@
 package com.revature.initialize;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -18,13 +19,20 @@ public class SessionFactory {
 	}
 	
 	public Session createSession(Class<?> clazz) {
+		try {
 		String name = clazz.getClass().getSimpleName();
 		
 		if(!metaModelMap.containsKey(name)) {
 			System.out.println("Class not found!");
 			return null;
+			
 		}
 		return new Session(connUtil.getConnection(), metaModelMap.get(name));
+		} catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 }
