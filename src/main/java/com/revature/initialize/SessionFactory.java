@@ -18,16 +18,14 @@ public class SessionFactory {
 		this.metaModelMap = metaModelMap;
 	}
 	
-	public Session createSession(Class<?> clazz) {
+	public Session createSession(String className) {
 		try {
-		String name = clazz.getClass().getSimpleName();
-		
-		if(!metaModelMap.containsKey(name)) {
+		if(!metaModelMap.containsKey(className)) {
 			System.out.println("Class not found!");
 			return null;
 			
 		}
-		return new Session(connUtil.getConnection(), metaModelMap.get(name));
+		return new Session(connUtil.getConnection(), metaModelMap.get(className));
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
