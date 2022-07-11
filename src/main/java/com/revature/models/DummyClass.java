@@ -10,7 +10,7 @@ public class DummyClass {
 	@Id(columnName = "test_id")
 	private int testId;
 	
-	@Column(columnName = "test_field_1")
+	@Column(name = "test_field_1")
 	private String testField1;
 
 	public int getTestId() {
