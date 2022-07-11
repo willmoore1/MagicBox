@@ -10,6 +10,6 @@ import java.lang.annotation.Target;
 @Target(FIELD)
 public @interface Column {
 
-	String columnName();
+	String name();
 	
 }
