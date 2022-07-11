@@ -1,22 +1,21 @@
 package com.revature.runtime;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.revature.annotations.Column;
 import com.revature.annotations.Table;
+import com.revature.initialize.ColumnField;
 import com.revature.initialize.MetaModel;
 
 
 //gonna have to use reflections api
-public class Session {
+public class Session<T> {
 	Connection connection;
 	private List<Object> cache = null;
-	private List<Field> fields = null;
+	private MetaModel<T> model;
 	
 	//this should save the input to a local cache
 	public void save(Object input) { 
@@ -40,35 +39,27 @@ public class Session {
 
 		
 		for(Object o : this.cache) {
-			Field[] fields = o.getClass().getFields();
+			List<ColumnField> fields = model.getColumns();
 			String sql = "INSERT INTO " + o.getClass().getAnnotation(Table.class).name() + " (";
-			for(Field field : fields) {
-				if(field.isAnnotationPresent(Column.class)) {
-					sql += field.getAnnotation(Column.class).name()+", ";
-				} else {
-					sql += field.getName()+", ";
-				}
+			for(ColumnField field : fields) {
+				sql += field.getColumnName();
 			}					
 			sql += ") VALUES (?";
-			for(int i = 1; i < fields.length; i++) {
+			for(int i = 1; i < fields.size(); i++) {
 				sql += ",?";
 			}
 			sql += ");";
 			
 			try {
 				PreparedStatement stmt = connection.prepareStatement(sql);
-				for(int i = 0; i < fields.length; i++) {
-					stmt.setObject(i+1, fields[i].get(o));
+				for(int i = 0; i < fields.size(); i++) {
+					stmt.setObject(i+1, fields.get(i).getValue(o));
 				}
-				
-				
+
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -86,8 +77,9 @@ public class Session {
 		this.connection = null;
 	}
 	
-	public Session(Connection conn, MetaModel<?> model) {
+	public Session(Connection conn, MetaModel<T> model) {
 		this.connection = conn;
+		this.model = model;
 		
 	}
 	
