@@ -19,21 +19,23 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
 public class Configuration {
 	
 	private static ConnectionUtil connUtil = null;
-	private List<MetaModel<Class<?>>> metaModelList = null;
+	private Map<String, MetaModel<Class<?>>> metaModelMap = null;
 	
 	// This should return a new sessionfactory object based on a config file name as the input
 	public SessionFactory configure(String s) {
 	      // Instantiate the Factory and linked list
 	      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	      metaModelList = new LinkedList<>();
+	      metaModelMap = new HashMap<>();
 
 	      try {
 
@@ -68,12 +70,6 @@ public class Configuration {
 	                  Element element = (Element) node;
 	                  String name = element.getAttribute("name");	                 
 	                  
-	                  /*
-	                  System.out.println("Current Element :" + node.getNodeName());
-	                  System.out.println("Property : " + name);
-	                  System.out.println(element.getTextContent());
-	                  */
-	                  
 	                  if(name.equals("magicbox.connection.url")) {
 	                	  url = element.getTextContent();
 	                  }
@@ -105,16 +101,13 @@ public class Configuration {
 	                  Element element = (Element) node;
 	                  String className = element.getAttribute("class");	                 
 	                  
-	                  /*
-	                  System.out.println("Current Element :" + node.getNodeName());
-	                  System.out.println("Property : " + className);*/
-	                  metaModelList.add(MetaModel.of(Class.forName(className)));
+	                  metaModelMap.put(className, MetaModel.of(Class.forName(className)));
 	                  
 	             }
 	              
 	          }
-	          
-	          return new SessionFactory(connUtil, metaModelList);
+	          	          
+	          return new SessionFactory(connUtil, metaModelMap);
 
 	      } catch (ParserConfigurationException | SAXException | IOException e) {
 	          e.printStackTrace();
