@@ -9,7 +9,7 @@ import javax.imageio.spi.ServiceRegistry;
 import com.revature.runtime.Session;
 
 public class SessionFactory {
-	
+
 	private ConnectionUtil connUtil;
 	private Map<String, MetaModel<Class<?>>> metaModelMap;
 
@@ -17,20 +17,19 @@ public class SessionFactory {
 		this.connUtil = connUtil;
 		this.metaModelMap = metaModelMap;
 	}
-	
+
 	public Session createSession(String className) {
 		try {
-		if(!metaModelMap.containsKey(className)) {
-			System.out.println("Class not found!");
-			return null;
-			
+			if (!metaModelMap.containsKey(className)) {
+				System.out.println("Class not found!");
+				return null;
+			}
+			return new Session(connUtil.getConnection(), metaModelMap.get(className));
+		} catch (SQLException e) {
+			System.out.println("Could not create connection to database!");
 		}
-		return new Session(connUtil.getConnection(), metaModelMap.get(className));
-		} catch(SQLException e) {
-			e.printStackTrace();
-		}
-		
+
 		return null;
 	}
-	
+
 }

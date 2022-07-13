@@ -4,117 +4,123 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
-
 public class Configuration {
-	
-	private static ConnectionUtil connUtil = null;
-	private Map<String, MetaModel<Class<?>>> metaModelMap = null;
-	
-	// This should return a new sessionfactory object based on a config file name as the input
-	public SessionFactory configure(String s) {
-	      // Instantiate the Factory and linked list
-	      DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-	      metaModelMap = new HashMap<>();
 
-	      try {
+	private ConnectionUtil connUtil = null;
+	private Map<String, MetaModel<Class<?>>> metaModelMap;
 
-	          // Optional, but recommended
-	          // Process XML securely, avoid attacks like XML External Entities (XXE)
-	          dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+	public Configuration() {
+		connUtil = new ConnectionUtil();
+		metaModelMap = new HashMap<>();
+	}
 
-	          // parse XML file
-	          DocumentBuilder db = dbf.newDocumentBuilder();
+	// This should return a new sessionfactory object based on a config file name as
+	// the input
+	public SessionFactory configure(String fileName) {
+		Document doc = parseFile(fileName);
+		
+		if(doc == null) 
+			return null;
+		
+		setConnectionUtil(doc);
 
-	          Document doc = db.parse(new File("src/main/java/resource/" + s));
+		addClasses(doc);
 
-	          doc.getDocumentElement().normalize();	       
-	          
-	          NodeList list = doc.getElementsByTagName("property");
-	          
-	          connUtil = new ConnectionUtil();
-	          
-	          // User credentials
-	          String url = null;
-	          String username = null;
-	          String password = null;
-	          String poolSize = null;
-	          
-	          // Read credentials
-	          for (int temp = 0; temp < list.getLength(); temp++) {
+		return new SessionFactory(connUtil, metaModelMap);
+	}
 
-	              Node node = list.item(temp);
+	public void addClass(String className) {
+		try {
+			metaModelMap.put(className, MetaModel.of(Class.forName(className)));
+		} catch (ClassNotFoundException e) {
+			System.out.println("Class " + className + " not found!");
+		}
+	}
 
-	              if (node.getNodeType() == Node.ELEMENT_NODE) {
+	// Attempts to parse file with the given file name. Returns null if unsuccessful
+	private Document parseFile(String fileName) {
+		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
-	                  Element element = (Element) node;
-	                  String name = element.getAttribute("name");	                 
-	                  
-	                  if(name.equals("magicbox.connection.url")) {
-	                	  url = element.getTextContent();
-	                  }
-	                  else if(name.equals("magicbox.connection.username")) {
-	                	  username = element.getTextContent();
-	                  }
-	                  else if(name.equals("magicbox.connection.password")) {
-	                	  password = element.getTextContent();
-	                  }
-	                  else if(name.equals("magicbox.connection.pool_size")) {
-	                	  poolSize = element.getTextContent();
-	                  }
-	             }
-	              
-	          }
-	          
-	          // Set up DB credentials and pool size. Note that this does not actually create a connection; the credentials are set up without any attempt to verify them
-	          connUtil.properties(url, username, password, poolSize);	         
-	          
-	          list = doc.getElementsByTagName("mapping");
-	         
-	          // Read classes
-	          for (int temp = 0; temp < list.getLength(); temp++) {
+		try {
+			// Process XML securely, avoid attacks like XML External Entities (XXE)
+			dbf.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
 
-	              Node node = list.item(temp);
+			// parse XML file
+			DocumentBuilder db = dbf.newDocumentBuilder();
 
-	              if (node.getNodeType() == Node.ELEMENT_NODE) {
+			Document doc = db.parse(new File(fileName));
 
-	                  Element element = (Element) node;
-	                  String className = element.getAttribute("class");	                 
-	                  
-	                  metaModelMap.put(className, MetaModel.of(Class.forName(className)));
-	                  
-	             }
-	              
-	          }
-	          	          
-	          return new SessionFactory(connUtil, metaModelMap);
+			doc.getDocumentElement().normalize();
 
-	      } catch (ParserConfigurationException | SAXException | IOException e) {
-	          e.printStackTrace();
-	      } catch(ClassNotFoundException e) {
-	    	  e.printStackTrace();
-	      }
-		return null;
+			return doc;
+		} catch (Exception e) {
+			System.out.println("Could not parse file!");
+			return null;
+		}
+	}
+
+	// Sets connectionUtil up
+	private void setConnectionUtil(Document doc) {
+		NodeList list = doc.getElementsByTagName("property");
+
+		// User credentials
+		String url = null;
+		String username = null;
+		String password = null;
+		String poolSize = null;
+
+		// Read credentials
+		for (int temp = 0; temp < list.getLength(); temp++) {
+
+			Node node = list.item(temp);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+
+				Element element = (Element) node;
+				String name = element.getAttribute("name");
+
+				if (name.equals("magicbox.connection.url")) {
+					url = element.getTextContent();
+				} else if (name.equals("magicbox.connection.username")) {
+					username = element.getTextContent();
+				} else if (name.equals("magicbox.connection.password")) {
+					password = element.getTextContent();
+				} else if (name.equals("magicbox.connection.pool_size")) {
+					poolSize = element.getTextContent();
+				}
+			}
+
+		}
+
+		// Set up DB credentials and pool size
+		connUtil.properties(url, username, password, poolSize);
 	}
 	
+	// Add classes from given document into metaModelMap
+	private void addClasses(Document doc) {
+		NodeList list = doc.getElementsByTagName("mapping");
+
+		// Read classes
+		for (int temp = 0; temp < list.getLength(); temp++) {
+
+			Node node = list.item(temp);
+
+			if (node.getNodeType() == Node.ELEMENT_NODE) {
+
+				Element element = (Element) node;
+				String className = element.getAttribute("class");
+
+				addClass(className);
+			}
+		}
+	}
+
 }

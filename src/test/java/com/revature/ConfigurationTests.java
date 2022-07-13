@@ -1,13 +1,7 @@
 package com.revature;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.LinkedList;
-import java.util.Random;
 
 import org.junit.After;
 import org.junit.Before;
@@ -16,11 +10,13 @@ import org.junit.Test;
 import com.revature.initialize.Configuration;
 import com.revature.initialize.SessionFactory;
 import com.revature.models.DummyClass;
+import com.revature.models.DummyClass2;
 import com.revature.runtime.Session;
 
 public class ConfigurationTests {
 	// Declaring the config class instance to be tested
 	private Configuration config;
+	private String filePath = "src/main/java/resource/magicbox.cfg.xml";
 	
 	@Before
 	public void setup() {
@@ -34,20 +30,37 @@ public class ConfigurationTests {
 	
 	@Test
 	public void testConfigureMethodFindsFile() {
-		config.configure("magicbox.cfg.xml");
+		config.configure(filePath);
 	}
 	
 	@Test
 	public void testSessionFactoryCreateSessionReturnsNotNull() {
-		SessionFactory sessionFactory = config.configure("magicbox.cfg.xml");
-		Session session = sessionFactory.createSession(new DummyClass().getClass().getName());
+		String name = new DummyClass().getClass().getName();
+		
+		SessionFactory sessionFactory = config.configure(filePath);
+		
+		Session session = sessionFactory.createSession(name);
+		
+		assertNotNull(session);
+	}
+	
+	@Test
+	public void testConfigAddClass() {
+		String name = new DummyClass().getClass().getName();
+		config.addClass(name);
+		
+		SessionFactory sessionFactory = config.configure(filePath);
+		
+		Session session = sessionFactory.createSession(name);
+		
 		assertNotNull(session);
 	}
 	
 	@Test
 	public void testSessionFactoryCreateSessionReturnsNull() {
-		SessionFactory sessionFactory = config.configure("magicbox.cfg.xml");
+		SessionFactory sessionFactory = config.configure(filePath);
 		Session session = sessionFactory.createSession(new String());
+		
 		assertNull(session);
 	}
 }
