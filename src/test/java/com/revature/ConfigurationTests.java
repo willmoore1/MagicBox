@@ -21,33 +21,45 @@ import com.revature.runtime.Session;
 public class ConfigurationTests {
 	// Declaring the config class instance to be tested
 	private Configuration config;
+	private SessionFactory sesFac;
+	String className;
 	
 	@Before
 	public void setup() {
 		config = new Configuration();
+		sesFac = config.configure("magicbox.cfg.xml");
+		className = new DummyClass().getClass().getName();
 	}
 	
 	@After
 	public void teardown() {
 		config = null;
-	}
-	
-	@Test
-	public void testConfigureMethodFindsFile() {
-		config.configure("magicbox.cfg.xml");
+		sesFac = null;
+		className = null;
 	}
 	
 	@Test
 	public void testSessionFactoryCreateSessionReturnsNotNull() {
-		SessionFactory sessionFactory = config.configure("magicbox.cfg.xml");
-		Session session = sessionFactory.createSession(new DummyClass().getClass().getName());
+		System.out.println("1");
+		System.out.println(className);
+		Session<?> session = sesFac.createSession(className);
 		assertNotNull(session);
 	}
 	
 	@Test
 	public void testSessionFactoryCreateSessionReturnsNull() {
-		SessionFactory sessionFactory = config.configure("magicbox.cfg.xml");
-		Session session = sessionFactory.createSession(new String());
+		Session<?> session = sesFac.createSession(new String());
+		System.out.println("2");
 		assertNull(session);
+	}
+	
+	@Test
+	public void testSessionFactorySave() {
+		@SuppressWarnings("unchecked")
+		Session<DummyClass> ses = (Session<DummyClass>) sesFac.createSession(className);
+		DummyClass dumObj = new DummyClass();
+		ses.save(dumObj);
+		ses.commit();
+		ses.get("test_id", dumObj.getTestId());
 	}
 }

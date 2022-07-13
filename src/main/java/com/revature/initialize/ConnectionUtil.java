@@ -9,12 +9,12 @@ import com.zaxxer.hikari.HikariDataSource;
 // Let's use HikariCP to do connection pooling
 // https://www.baeldung.com/hikaricp
 public class ConnectionUtil {
-	private static HikariConfig config = new HikariConfig();
-	private static HikariDataSource ds;
-	private static String url = "jdbc:postgresql://database-2.cxoqvipxbnxl.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=bank";
-	private static String poolSize = "10";
-	private static String username = "postgres";
-	private static String password = "masterpassword";
+	private HikariConfig config = new HikariConfig();
+	private HikariDataSource ds;
+	private String url = "jdbc:postgresql://database-2.cxoqvipxbnxl.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=bank";
+	private String poolSize = "10";
+	private String username = "postgres";
+	private String password = "masterpassword";
 	
 //	protected ConnectionUtil(String url, String username, String password) {
 //		ConnectionUtil.username = username;
@@ -23,29 +23,29 @@ public class ConnectionUtil {
 //	}
 	
 	protected void properties(String url, String username, String password) {
-		ConnectionUtil.username = username;
-		ConnectionUtil.password = password;
-		ConnectionUtil.url = url;
+		this.username = username;
+		this.password = password;
+		this.url = url;
 		ds = new HikariDataSource(config);
 	}
 	protected void properties(String url, String username, String password, String poolSize) {
-		ConnectionUtil.username = username;
-		ConnectionUtil.password = password;
-		ConnectionUtil.url = url;
-		ConnectionUtil.poolSize = poolSize;
+		this.username = username;
+		this.password = password;
+		this.url = url;
+		this.poolSize = poolSize;
 		ds = new HikariDataSource(config);
 	}
 	
 	
-	public static String getPoolSize() {
+	public String getPoolSize() {
 		return poolSize;
 	}
 
-	public static void setPoolSize(String poolSize) {
-		ConnectionUtil.poolSize = poolSize;
+	public void setPoolSize(String poolSize) {
+		this.poolSize = poolSize;
 	}
 
-	static {
+	{
 		config.setJdbcUrl(url);
 		config.setUsername(username);
 		config.setPassword(password);
@@ -63,7 +63,7 @@ public class ConnectionUtil {
 //		return conList;
 //	}
 //	
-	public static Connection getConnection() throws SQLException {
+	public Connection getConnection() throws SQLException {
 		if(ds != null) {
 			return ds.getConnection();
 		} else {
