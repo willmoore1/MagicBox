@@ -1,11 +1,11 @@
 package com.revature.initialize;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.revature.annotations.Column;
 import com.revature.annotations.Id;
 import com.revature.annotations.JoinColumn;
 import com.revature.annotations.Table;
@@ -46,7 +46,7 @@ public class MetaModel<T> { // We're inferring that the MetaModel Class can only
 											" is not annotated with @Entity");
 		}
 		
-		return new MetaModel<>(clazz);
+		return new MetaModel<Class<?>>(clazz);
 	}
 	
 	// We should create method to gather more data about our class
@@ -136,6 +136,27 @@ public class MetaModel<T> { // We're inferring that the MetaModel Class can only
 	
 	public String getClassName() {
 		return clazz.getName();
+	}
+	
+	public String getTableName() {
+		String name = clazz.getAnnotation(Table.class).name();
+		return name;
+	}
+	public T getObject(Object[] fieldVals) {
+		Constructor<?>[] allConstructors = clazz.getDeclaredConstructors();
+		for(Constructor<?> ctor : allConstructors) {
+			Class<?>[] pType = ctor.getParameterTypes();
+			if(pType.length == clazz.getFields().length) {
+				try {
+					T ret = (T) ctor.newInstance(fieldVals);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 
 }

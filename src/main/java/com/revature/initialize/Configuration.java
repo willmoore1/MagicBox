@@ -99,14 +99,15 @@ public class Configuration {
 	              if (node.getNodeType() == Node.ELEMENT_NODE) {
 
 	                  Element element = (Element) node;
-	                  String className = element.getAttribute("class");	                 
+	                  String className = element.getAttribute("class");	   
+	                  //System.out.println(className);
 	                  
 	                  metaModelMap.put(className, MetaModel.of(Class.forName(className)));
 	                  
 	             }
 	              
 	          }
-	          	          
+      	      System.out.println(metaModelMap.toString());
 	          return new SessionFactory(connUtil, metaModelMap);
 
 	      } catch (ParserConfigurationException | SAXException | IOException e) {

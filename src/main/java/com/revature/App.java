@@ -10,7 +10,7 @@ public class App {
 	public static void main(String[] args) {
 		try {
 			
-			Connection conn = ConnectionUtil.getConnection();
+			Connection conn = ConnectionUtil.configure().getConnection();
 			System.out.println(conn.getNetworkTimeout());
 			
 			
