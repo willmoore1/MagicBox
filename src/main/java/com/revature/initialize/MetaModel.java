@@ -146,9 +146,11 @@ public class MetaModel<T> { // We're inferring that the MetaModel Class can only
 		Constructor<?>[] allConstructors = clazz.getDeclaredConstructors();
 		for(Constructor<?> ctor : allConstructors) {
 			Class<?>[] pType = ctor.getParameterTypes();
-			if(pType.length == clazz.getFields().length) {
+			if(pType.length == columnFields.size()) {
+				//System.out.println(columnFields.size());
 				try {
 					T ret = (T) ctor.newInstance(fieldVals);
+					return ret;
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException e) {
 					// TODO Auto-generated catch block

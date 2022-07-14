@@ -11,7 +11,7 @@ import com.zaxxer.hikari.HikariDataSource;
 public class ConnectionUtil {
 	private HikariConfig config = new HikariConfig();
 	private HikariDataSource ds;
-	private String url = "jdbc:postgresql://database-2.cxoqvipxbnxl.us-east-2.rds.amazonaws.com:5432/postgres?currentSchema=bank";
+	private String url = "jdbc:postgresql://database-2.cxoqvipxbnxl.us-east-2.rds.amazonaws.com:5432/postgres";
 	private String poolSize = "10";
 	private String username = "postgres";
 	private String password = "masterpassword";
