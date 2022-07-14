@@ -35,11 +35,15 @@ public class Session<T> {
 		Object[] fieldVals = new Object[model.getColumns().size()];
 		try {
 			stmt = connection.prepareStatement(sql);
+			System.out.println(sql);
 			stmt.setObject(1, value);
 			ResultSet rs = stmt.executeQuery();
 			while (rs.next()) {
 				for (int i = 0; i < fieldVals.length; i++) {
-					fieldVals[i] = rs.getObject(i);
+					fieldVals[i] = rs.getObject(i+1);
+				}
+				for (Object object : fieldVals) {
+					System.out.println(object);
 				}
 				allVals.add(model.getObject(fieldVals));
 			}
@@ -62,9 +66,11 @@ public class Session<T> {
 
 		List<ColumnField> fields = model.getColumns();
 		for (T o : this.cache) {
-
+			System.out.println(o.toString());
 			String sql = "INSERT INTO " + table + " (";
+			int temp = 0;
 			for (ColumnField field : fields) {
+				if(temp++ > 0) sql += ", ";
 				sql += field.getColumnName();
 			}
 			sql += ") VALUES (?";
@@ -74,10 +80,14 @@ public class Session<T> {
 			sql += ");";
 
 			try {
+				System.out.println(sql);
 				PreparedStatement stmt = connection.prepareStatement(sql);
 				for (int i = 0; i < fields.size(); i++) {
+					System.out.println(fields.get(i).getValue(o));
+					System.out.println(fields.get(i).getColumnName());
 					stmt.setObject(i + 1, fields.get(i).getValue(o));
 				}
+				stmt.execute();
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -105,7 +115,7 @@ public class Session<T> {
 		this.connection = conn;
 		this.model = model;
 		table = model.getTableName();
-		int temp = 0;
+		/*int temp = 0;
 		String sql = "CREATE TABLE IF NOT EXISTS " + table + " (";
 		for(ColumnField f : model.getColumns()) {
 			if(temp++ > 0) {
@@ -122,7 +132,7 @@ public class Session<T> {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		
 		
 	}

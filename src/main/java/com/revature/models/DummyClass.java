@@ -41,6 +41,11 @@ public class DummyClass {
 	public DummyClass() {
 		// TODO Auto-generated constructor stub
 	}
+
+	@Override
+	public String toString() {
+		return "DummyClass [testId=" + testId + ", testField1=" + testField1 + ", randomNumber=" + randomNumber + "]";
+	}
 	
 
 
