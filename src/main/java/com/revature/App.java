@@ -1,12 +1,8 @@
 package com.revature;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.List;
 import java.util.Scanner;
 
 import com.revature.initialize.Configuration;
-import com.revature.initialize.ConnectionUtil;
 import com.revature.initialize.SessionFactory;
 import com.revature.models.Student;
 import com.revature.runtime.Session;
@@ -14,10 +10,11 @@ import com.revature.runtime.Session;
 public class App {
 	// Path to the cfg.xml file
 	private static String filePath = "src/main/java/resource/magicbox.cfg.xml";
+	private static Scanner scanner = new Scanner(System.in);
 	
 	public static void main(String[] args) {
 		
-		Scanner scanner = new Scanner(System.in);
+		
 		// Initialize config and add student as a class
 		Configuration config = new Configuration();
 		String studentClassName = Student.class.getName();
@@ -38,16 +35,16 @@ public class App {
 			
 			switch(input) {
 				case 1:
-					createStudent();
+					createStudent(session);
 					break;
 				case 2:
-					readStudent();
+					readStudent(session);
 					break;
 				case 3:
-					updateStudent();
+					updateStudent(session);
 					break;
 				case 4:
-					deleteStudent();
+					deleteStudent(session);
 					break;
 				case 5:
 					System.out.println("Exiting application...");
@@ -56,19 +53,31 @@ public class App {
 		}
 	}
 	
-	private static void createStudent() {
+	private static void createStudent(Session<?> studentSession) {
+		// Get student info 
+		System.out.println("Enter the student's first name:");
+		String firstName = scanner.nextLine();
+		
+		System.out.println("Enter the student's last name:");
+		String lastName = scanner.nextLine();
+		
+		System.out.println("Enter the student's email:");
+		String email = scanner.nextLine();
+		
+		// Save a new Student object, then commit it to db
+		//studentSession.save(new Student(firstName, lastName, email));
+		//studentSession.commit();
+	}
+	
+	private static void readStudent(Session<?> studentSession) {
 		
 	}
 	
-	private static void readStudent() {
+	private static void updateStudent(Session<?> studentSession) {
 		
 	}
 	
-	private static void updateStudent() {
-		
-	}
-	
-	private static void deleteStudent() {
+	private static void deleteStudent(Session<?> studentSession) {
 		
 	}
 	
