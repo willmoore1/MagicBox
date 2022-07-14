@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Configuration {
-
 	private ConnectionUtil connUtil = null;
 	private Map<String, MetaModel<Class<?>>> metaModelMap;
 

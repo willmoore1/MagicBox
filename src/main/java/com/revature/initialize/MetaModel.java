@@ -1,13 +1,14 @@
 package com.revature.initialize;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.revature.annotations.Column;
-import com.revature.annotations.Entity;
 import com.revature.annotations.Id;
 import com.revature.annotations.JoinColumn;
+import com.revature.annotations.Table;
 
 /*
  * This class's job is to gather as much information as possible about the class that we want
@@ -40,12 +41,12 @@ public class MetaModel<T> { // We're inferring that the MetaModel Class can only
 		
 		// Let's check for the @entity notation
 		
-		if (clazz.getAnnotation(Entity.class) == null) {
+		if (clazz.getAnnotation(Table.class) == null) {
 			throw new IllegalStateException("Cannot create MetaModel Object! Provided Class: " + clazz.getName() +
 											" is not annotated with @Entity");
 		}
 		
-		return new MetaModel<>(clazz);
+		return new MetaModel<Class<?>>(clazz);
 	}
 	
 	// We should create method to gather more data about our class
@@ -61,14 +62,7 @@ public class MetaModel<T> { // We're inferring that the MetaModel Class can only
 		// add it to the metamodel's linked list
 		
 		for (Field field: fields) {
-			
-			// Create a column object, this will not be null if the field is annotated with @Column
-			Column column = field.getAnnotation(Column.class);
-			
-			if (column != null) {
-				// This means it's marked with @column and we can add it to our list
-				columnFields.add(new ColumnField(field));
-			}
+			columnFields.add(new ColumnField(field));
 		}
 		
 		// Let's just add some extra logic in the case that the entity doesn't have any column fields
@@ -142,6 +136,27 @@ public class MetaModel<T> { // We're inferring that the MetaModel Class can only
 	
 	public String getClassName() {
 		return clazz.getName();
+	}
+	
+	public String getTableName() {
+		String name = clazz.getAnnotation(Table.class).name();
+		return name;
+	}
+	public T getObject(Object[] fieldVals) {
+		Constructor<?>[] allConstructors = clazz.getDeclaredConstructors();
+		for(Constructor<?> ctor : allConstructors) {
+			Class<?>[] pType = ctor.getParameterTypes();
+			if(pType.length == clazz.getFields().length) {
+				try {
+					T ret = (T) ctor.newInstance(fieldVals);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+		return null;
 	}
 
 }

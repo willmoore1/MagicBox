@@ -17,16 +17,19 @@ public class SessionFactory {
 		this.connUtil = connUtil;
 		this.metaModelMap = metaModelMap;
 	}
-
-	public Session createSession(String className) {
+	
+	public Session<?> createSession(String className) {
+		System.out.println("ClassName: " + className);
 		try {
-			if (!metaModelMap.containsKey(className)) {
-				System.out.println("Class not found!");
-				return null;
-			}
-			return new Session(connUtil.getConnection(), metaModelMap.get(className));
-		} catch (SQLException e) {
-			System.out.println("Could not create connection to database!");
+			
+		if(!metaModelMap.containsKey(className)) {
+			System.out.println("SessionFactory: Class not found!");
+			return null;
+			
+		}
+		return new Session<>(connUtil.getConnection(), metaModelMap.get(className));
+		} catch(SQLException e) {
+			e.printStackTrace();
 		}
 
 		return null;
