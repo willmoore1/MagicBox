@@ -9,7 +9,7 @@ import javax.imageio.spi.ServiceRegistry;
 import com.revature.runtime.Session;
 
 public class SessionFactory {
-	
+
 	private ConnectionUtil connUtil;
 	private Map<String, MetaModel<Class<?>>> metaModelMap;
 
@@ -31,8 +31,8 @@ public class SessionFactory {
 		} catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
 }
