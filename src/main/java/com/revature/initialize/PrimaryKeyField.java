@@ -34,5 +34,18 @@ private Field field;
 	public String getColumnName() {
 		return field.getAnnotation(Id.class).columnName();
 	}
+	
+	public Object getValue(Object o) {
+		try {
+			field.setAccessible(true);
+			return field.get(o);
+		} catch (IllegalArgumentException e) {
+			//System.out.println("IllegalArgument");
+			return null;
+		} catch (IllegalAccessException e) {
+			//System.out.println("IllegalAccess");
+			return null;
+		}
+	}
 
 }

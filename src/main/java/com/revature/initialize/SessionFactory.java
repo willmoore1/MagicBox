@@ -19,7 +19,7 @@ public class SessionFactory {
 	}
 	
 	public Session<?> createSession(String className) {
-		System.out.println("ClassName: " + className);
+		//System.out.println("ClassName: " + className);
 		try {
 			
 		if(!metaModelMap.containsKey(className)) {
