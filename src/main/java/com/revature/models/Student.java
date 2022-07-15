@@ -4,7 +4,7 @@ import com.revature.annotations.Column;
 import com.revature.annotations.Id;
 import com.revature.annotations.Table;
 
-@Table(name = "student")
+@Table(name = "students")
 public class Student {
 
     @Id(columnName = "id")

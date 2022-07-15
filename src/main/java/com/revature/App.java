@@ -24,7 +24,7 @@ public class App {
 		SessionFactory sessionFactory = config.configure(filePath);
 		
 		// Create a new Student session using our factory
-		Session<?> session = sessionFactory.createSession(filePath);
+		Session<Student> session = (Session<Student>) sessionFactory.createSession(studentClassName);
 		
 		int input = 0;
 		
@@ -32,6 +32,7 @@ public class App {
 			System.out.println("Welcome to the student database!");
 			System.out.println("Press 1 to add a new student.\nPress 2 to view a student's information.\nPress 3 to update a student's information.\nPress 4 to delete a student.\nPress 5 to quit the application.");
 			input = scanner.nextInt();
+			scanner.nextLine();
 			
 			switch(input) {
 				case 1:
@@ -53,7 +54,7 @@ public class App {
 		}
 	}
 	
-	private static void createStudent(Session<?> studentSession) {
+	private static void createStudent(Session<Student> studentSession) {
 		// Get student info 
 		System.out.println("Enter the student's first name:");
 		String firstName = scanner.nextLine();
@@ -64,21 +65,51 @@ public class App {
 		System.out.println("Enter the student's email:");
 		String email = scanner.nextLine();
 		
+		Student student = new Student(firstName, lastName, email);
+		
 		// Save a new Student object, then commit it to db
-		//studentSession.save(new Student(firstName, lastName, email));
-		//studentSession.commit();
+		studentSession.save(student);
+		studentSession.commit();
+		//System.out.println("Added a new student with ID " + studentSession.get("email", email).get(0).getId());
 	}
 	
-	private static void readStudent(Session<?> studentSession) {
+	private static void readStudent(Session<Student> studentSession) {
+		// Get student id
+		System.out.println("Enter the student's id:");
+		int id = scanner.nextInt();
+		scanner.nextLine();
+		
+		Student s = studentSession.get("id", id).get(0);
+		System.out.println(s);
 		
 	}
 	
-	private static void updateStudent(Session<?> studentSession) {
+	private static void updateStudent(Session<Student> studentSession) {
+		// Get student id and info 
+		System.out.println("Enter the student's ID:");
+		int id = scanner.nextInt();
+		scanner.nextLine();
 		
+		System.out.println("Enter the student's first name:");
+		String firstName = scanner.nextLine();
+		
+		System.out.println("Enter the student's last name:");
+		String lastName = scanner.nextLine();
+		
+		System.out.println("Enter the student's email:");
+		String email = scanner.nextLine();
+		
+		//studentSession.update("id", id);
 	}
 	
-	private static void deleteStudent(Session<?> studentSession) {
+	private static void deleteStudent(Session<Student> studentSession) {
+		// Get student id
+		System.out.println("Enter the student's id:");
+		int id = scanner.nextInt();
+		scanner.nextLine();
 		
+		//Student s = studentSession.delete("id", id).get(0);
+		//System.out.println(s);
 	}
 	
 }
