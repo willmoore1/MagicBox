@@ -7,7 +7,7 @@ import com.revature.annotations.Table;
 @Table(name = "test_table")
 public class DummyClass {
 	
-	@Id(columnName = "test_id")
+	@Column(name = "test_id")
 	private int testId;
 	
 	@Column(name = "test_field_1")
