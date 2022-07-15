@@ -3,6 +3,7 @@ package com.revature.initialize;
 import java.lang.reflect.Field;
 
 import com.revature.annotations.Column;
+import com.revature.annotations.Id;
 
 /*
  * The purpose of this class is to extract fields of a class marked with @Column
@@ -38,6 +39,11 @@ public class ColumnField {
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return "ColumnField [field=" + field + "]";
+	}
+
 	// Return the type of the field that annotated
 	public Class<?> getType(){
 		return field.getType();
@@ -46,6 +52,7 @@ public class ColumnField {
 	// Let's add one final method to extract the column so we can utilize if we're building sql tables
 	public String getColumnName() {
 		if(field.isAnnotationPresent(Column.class)) return field.getAnnotation(Column.class).name();
+		if(field.isAnnotationPresent(Id.class)) return field.getAnnotation(Id.class).columnName();
 		return(field.getName());
 	}
 

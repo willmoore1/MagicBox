@@ -61,7 +61,9 @@ public class Configuration {
 
 			return doc;
 		} catch (Exception e) {
+			System.out.println(fileName);
 			System.out.println("Could not parse file!");
+			e.printStackTrace();
 			return null;
 		}
 	}
