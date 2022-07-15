@@ -1,5 +1,6 @@
 package com.revature;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.revature.initialize.Configuration;
@@ -25,6 +26,7 @@ public class App {
 		
 		// Create a new Student session using our factory
 		Session<Student> session = (Session<Student>) sessionFactory.createSession(studentClassName);
+		
 		
 		int input = 0;
 		
@@ -68,9 +70,8 @@ public class App {
 		Student student = new Student(firstName, lastName, email);
 		
 		// Save a new Student object, then commit it to db
-		studentSession.save(student);
-		studentSession.commit();
-		//System.out.println("Added a new student with ID " + studentSession.get("email", email).get(0).getId());
+		int id = studentSession.savePK(student);
+		System.out.println("Added a new student with ID " + id);
 	}
 	
 	private static void readStudent(Session<Student> studentSession) {
@@ -79,6 +80,7 @@ public class App {
 		int id = scanner.nextInt();
 		scanner.nextLine();
 		
+		System.out.println("Found the following student info:");
 		Student s = studentSession.get("id", id).get(0);
 		System.out.println(s);
 		
@@ -99,7 +101,12 @@ public class App {
 		System.out.println("Enter the student's email:");
 		String email = scanner.nextLine();
 		
-		//studentSession.update("id", id);
+		Student s = new Student(firstName, lastName, email);
+		s.setId(id);
+		
+		studentSession.update(s);
+		System.out.println("Successfully updated the following student:");
+		System.out.println(s);
 	}
 	
 	private static void deleteStudent(Session<Student> studentSession) {
@@ -108,8 +115,10 @@ public class App {
 		int id = scanner.nextInt();
 		scanner.nextLine();
 		
-		//Student s = studentSession.delete("id", id).get(0);
-		//System.out.println(s);
+		Student s = studentSession.get("id", id).get(0);
+		
+		studentSession.delete(s);
+		System.out.println("Successfully deleted student");
 	}
 	
 }

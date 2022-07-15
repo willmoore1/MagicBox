@@ -84,6 +84,7 @@ public class Session<T> {
 			stmt = connection.prepareStatement(sql);
 //			System.out.println(sql);
 			stmt.setObject(1, value);
+			System.out.println(stmt);
 			ResultSet rs = stmt.executeQuery();
 //			System.out.println("FieldVals legnth: " + fieldVals.length);
 //			System.out.println("FieldVals: {");
