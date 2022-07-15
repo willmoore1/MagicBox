@@ -36,7 +36,7 @@ body {
 </head>
 <body>
 <div class="content">
-    <h1>Welcome, to the bank! &#127808;</h1>
+    <h1>Welcome! &#127808;</h1>
 	<h3>Please login below &#127808;</h3>
 
 	<!--  POST requests obfuscate the parameters from the search bar UNLIKE a GET request -->
